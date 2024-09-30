@@ -2,7 +2,7 @@
 
 # Daftar alamat IP yang diizinkan
 ALLOWED_IPS=(
-    "147.182.250.126"
+    "146.190.99.225"
 )
 
 # Tentukan lisensi yang valid
