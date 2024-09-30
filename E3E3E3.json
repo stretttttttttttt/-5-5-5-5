@@ -6,7 +6,7 @@ ALLOWED_IPS=(
 )
 
 # Tentukan lisensi yang valid
-VALID_LICENSE="lex"
+VALID_LICENSE="lio"
 
 # Path file lisensi dan file kesalahan
 LICENSE_FILE="/var/www/pterodactyl/license.txt"
