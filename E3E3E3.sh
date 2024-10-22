@@ -2,7 +2,8 @@
 
 # Daftar alamat IP yang diizinkan
 ALLOWED_IPS=(
-    "139.59.241.184"
+    "139.59.241.184",
+    "139.59.112.103"
     
 )
 
