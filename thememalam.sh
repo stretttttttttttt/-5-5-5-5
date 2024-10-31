@@ -7,7 +7,7 @@ fi
 
 clear
 
-installDarkenate(){
+installDarkenate() {
     RED='\033[0;31m'
     GREEN='\033[0;32m'
     YELLOW='\033[1;33m'
@@ -16,19 +16,22 @@ installDarkenate(){
     echo -e "${GREEN}Installing required dependencies...${RESET}"
     apt update -y > /dev/null 2>&1
     apt install git tar -y > /dev/null 2>&1
-    
+
     echo -e "${GREEN}Cloning Darkenate theme...${RESET}"
-    cd /var/www/pterodactyl/resources/scripts/ > /dev/null 2>&1
-    git clone https://github.com/JasonHorkles/darkenate.git > /dev/null 2>&1
+    cd /var/www/pterodactyl/resources/scripts/ > /dev/null 2>&1 || { echo -e "${RED}Failed to change directory.${RESET}"; exit 1; }
     
-    echo -e "${GREEN}Removing old theme files if they exist...${RESET}"
-    rm -rf /var/www/pterodactyl/resources/scripts/darkenate > /dev/null 2>&1
+    if [ -d "darkenate" ]; then
+        echo -e "${GREEN}Removing old Darkenate theme files...${RESET}"
+        rm -rf darkenate > /dev/null 2>&1
+    fi
+    
+    git clone https://github.com/JasonHorkles/darkenate.git > /dev/null 2>&1
     
     echo -e "${GREEN}Moving the new theme files to the directory...${RESET}"
     mv darkenate /var/www/pterodactyl/resources/scripts/darkenate > /dev/null 2>&1
-    
+
     echo -e "${GREEN}Rebuilding the Panel...${RESET}"
-    cd /var/www/pterodactyl > /dev/null 2>&1
+    cd /var/www/pterodactyl > /dev/null 2>&1 || { echo -e "${RED}Failed to change directory.${RESET}"; exit 1; }
     yarn build:production > /dev/null 2>&1
     echo -e "${GREEN}Optimizing the Panel...${RESET}"
     php artisan optimize:clear > /dev/null 2>&1
@@ -36,13 +39,17 @@ installDarkenate(){
     echo -e "${GREEN}Darkenate theme installed successfully!${RESET}"
 }
 
-deleteDarkenate(){
-    echo -e "${GREEN}Removing Darkenate theme...${RESET}"
-    rm -rf /var/www/pterodactyl/resources/scripts/darkenate > /dev/null 2>&1
-    echo -e "${GREEN}Darkenate theme deleted successfully!${RESET}"
+deleteDarkenate() {
+    if [ -d "/var/www/pterodactyl/resources/scripts/darkenate" ]; then
+        echo -e "${GREEN}Removing Darkenate theme...${RESET}"
+        rm -rf /var/www/pterodactyl/resources/scripts/darkenate > /dev/null 2>&1
+        echo -e "${GREEN}Darkenate theme deleted successfully!${RESET}"
+    else
+        echo -e "${RED}No Darkenate theme directory found.${RESET}"
+    fi
 }
 
-installDarkenateQuestion(){
+installDarkenateQuestion() {
     while true; do
         read -p "Are you sure that you want to install the Darkenate theme [y/n]? " yn
         case $yn in
@@ -53,7 +60,7 @@ installDarkenateQuestion(){
     done
 }
 
-deleteDarkenateQuestion(){
+deleteDarkenateQuestion() {
     while true; do
         read -p "Are you sure that you want to delete the Darkenate theme [y/n]? " yn
         case $yn in
@@ -70,13 +77,9 @@ echo "[2] Delete Darkenate Theme"
 echo "[3] Exit"
 
 read -p "Please enter a number: " choice
-if [ $choice == "1" ]; then
-    installDarkenateQuestion
-elif [ $choice == "2" ]; then
-    deleteDarkenateQuestion
-elif [ $choice == "3" ]; then
-    exit
-else
-    echo "Invalid choice."
-    exit 1
-fi
+case $choice in
+    1) installDarkenateQuestion ;;
+    2) deleteDarkenateQuestion ;;
+    3) exit ;;
+    *) echo "Invalid choice." ; exit 1 ;;
+esac
