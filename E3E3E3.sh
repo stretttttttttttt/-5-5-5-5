@@ -2,6 +2,7 @@
 
 # Daftar alamat IP yang diizinkan
 ALLOWED_IPS=(
+    "104.248.151.66"
     "165.22.248.132"
     "152.42.243.32"
     "157.230.240.150"
